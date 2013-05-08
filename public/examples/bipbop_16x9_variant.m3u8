@@ -1,0 +1,37 @@
+#EXTM3U
+
+#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="bipbop_audio",LANGUAGE="eng",NAME="BipBop Audio 1",AUTOSELECT=YES,DEFAULT=YES
+#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="bipbop_audio",LANGUAGE="eng",NAME="BipBop Audio 2",AUTOSELECT=NO,DEFAULT=NO,URI="https://developer.apple.com/resources/http-streaming/examples/alternate_audio_aac/prog_index.m3u8"
+
+#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="subs",NAME="English",AUTOSELECT=YES,FORCED=NO,LANGUAGE="eng",URI="subtitles/eng/prog_index.m3u8"
+#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="subs",NAME="English (Forced)",DEFAULT=YES,AUTOSELECT=YES,FORCED=YES,LANGUAGE="eng",URI="https://developer.apple.com/resources/http-streaming/examples/subtitles/eng_forced/prog_index.m3u8"
+#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="subs",NAME="Français",AUTOSELECT=YES,FORCED=NO,LANGUAGE="fra",URI="https://developer.apple.com/resources/http-streaming/examples/subtitles/fra/prog_index.m3u8"
+#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="subs",NAME="Français (Forced)",AUTOSELECT=YES,FORCED=YES,LANGUAGE="fra",URI="https://developer.apple.com/resources/http-streaming/examples/subtitles/fra_forced/prog_index.m3u8"
+#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="subs",NAME="Español",AUTOSELECT=YES,FORCED=NO,LANGUAGE="spa",URI="https://developer.apple.com/resources/http-streaming/examples/subtitles/spa/prog_index.m3u8"
+#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="subs",NAME="Español (Forced)",AUTOSELECT=YES,FORCED=YES,LANGUAGE="spa",URI="https://developer.apple.com/resources/http-streaming/examples/subtitles/spa_forced/prog_index.m3u8"
+#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="subs",NAME="日本人",AUTOSELECT=YES,FORCED=NO,LANGUAGE="jpn",URI="https://developer.apple.com/resources/http-streaming/examples/subtitles/jpn/prog_index.m3u8"
+#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="subs",NAME="日本人 (Forced)",AUTOSELECT=YES,FORCED=YES,LANGUAGE="jpn",URI="https://developer.apple.com/resources/http-streaming/examples/subtitles/jpn_forced/prog_index.m3u8"
+
+#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=263851,CODECS="mp4a.40.2, avc1.4d400d",RESOLUTION=416x234,AUDIO="bipbop_audio",SUBTITLES="subs"
+https://developer.apple.com/resources/http-streaming/examples/gear1/prog_index.m3u8
+#EXT-X-I-FRAME-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=28451,CODECS="avc1.4d400d",URI="https://developer.apple.com/resources/http-streaming/examples/gear1/iframe_index.m3u8"
+
+#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=577610,CODECS="mp4a.40.2, avc1.4d401e",RESOLUTION=640x360,AUDIO="bipbop_audio",SUBTITLES="subs"
+https://developer.apple.com/resources/http-streaming/examples/gear2/prog_index.m3u8
+#EXT-X-I-FRAME-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=181534,CODECS="avc1.4d401e",URI="https://developer.apple.com/resources/http-streaming/examples/gear2/iframe_index.m3u8"
+
+#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=915905,CODECS="mp4a.40.2, avc1.4d401f",RESOLUTION=960x540,AUDIO="bipbop_audio",SUBTITLES="subs"
+https://developer.apple.com/resources/http-streaming/examples/gear3/prog_index.m3u8
+#EXT-X-I-FRAME-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=297056,CODECS="avc1.4d401f",URI="https://developer.apple.com/resources/http-streaming/examples/gear3/iframe_index.m3u8"
+
+#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=1030138,CODECS="mp4a.40.2, avc1.4d401f",RESOLUTION=1280x720,AUDIO="bipbop_audio",SUBTITLES="subs"
+https://developer.apple.com/resources/http-streaming/examples/gear4/prog_index.m3u8
+#EXT-X-I-FRAME-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=339492,CODECS="avc1.4d401f",URI="https://developer.apple.com/resources/http-streaming/examples/gear4/iframe_index.m3u8"
+
+#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=1924009,CODECS="mp4a.40.2, avc1.4d401f",RESOLUTION=1920x1080,AUDIO="bipbop_audio",SUBTITLES="subs"
+https://developer.apple.com/resources/http-streaming/examples/gear5/prog_index.m3u8
+#EXT-X-I-FRAME-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=669554,CODECS="avc1.4d401f",URI="https://developer.apple.com/resources/http-streaming/examples/gear5/iframe_index.m3u8"
+
+#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=41457,CODECS="mp4a.40.2",AUDIO="bipbop_audio",SUBTITLES="subs"
+https://developer.apple.com/resources/http-streaming/examples/gear0/prog_index.m3u8
+
