@@ -15,24 +15,26 @@ probeFrames = (file, cb) ->
             frames =  JSON.parse(oStdOut).frames
             cb null, frames
 
-createIframeFile = (file, cb) ->
+createIframeFile = (initialOffsetTime, file, cb) ->
     probeFrames file, (err, frames) =>
         if (err) 
             log err
             cb(err)
         else 
             if (frames.length)
-                t0 = parseFloat frames[0].pkt_pts_time
-
+                tprev = parseFloat frames[0].pkt_pts_time + initialOffsetTime
+                pposmin1 = 0
                 for frame in frames when parseInt(frame.key_frame,10) == 1 
                     t = parseFloat frame.pkt_pts_time
-                    dt = t - t0
+                    dt = t - tprev
                     packetPosition = parseInt frame.pkt_pos, 10
-                    packetSize = parseInt frame.pkt_size, 10
                     log "#EXTINF:#{dt},"
-                    log "#EXT-X-BYTERANGE:#{packetSize}@#{packetPosition}"
+                    log "#EXT-X-BYTERANGE:#{packetPosition-pposmin1}@#{pposmin1}"
                     log file
-                cb(null)
+                    pposmin1 = packetPosition
+                    tprev = t
+                nextOffsetTime = parseFloat frames[frames.length-1].pkt_pts_time - tprev                    
+                cb(null, nextOffsetTime)
 
 
 log "#EXTM3U"
@@ -42,10 +44,29 @@ log "#EXT-X-MEDIA-SEQUENCE:0"
 log "#EXT-X-PLAYLIST-TYPE:VOD"
 log "#EXT-X-I-FRAMES-ONLY"
 
-async.each args, 
+file0 = args[0]
+waterfallArgs = []
+func1 = "(cb) -> createIframeFile 0, '"+args[0]+"', cb"
+waterfallArgs.push func1
+
+oArgs = JSON.parse JSON.stringify args
+log 'oArgs',oArgs
+oArgs.splice(0,1)
+log 'oArgs after splice',oArgs
+
+
+async.each oArgs,
     (file, cb) ->
-        createIframeFile file, cb
-    () ->
-        log "#EXT-X-ENDLIST"
+        func = "(initialOffsetTime,cb) -> createIframeFile initialOffsetTime, '" + file + "', cb"
+        waterfallArgs.push func
+
+
+for i in waterfallArgs
+    log i.toString()
+
+
+# async.waterfall waterfallArgs, 
+#     () ->
+#         log "#EXT-X-ENDLIST"
 
 
