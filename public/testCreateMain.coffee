@@ -30,7 +30,6 @@ createm3u8File = (file, cb) ->
                 for frame in frames when parseInt(frame.key_frame,10) == 1 
                     keyPackets.times.push parseFloat frame.pkt_pts_time
                     keyPackets.pos.push parseInt frame.pkt_pos, 10
-                    log frame
                 cb(null, keyPackets)
 
 dispDuration = duration + 1
@@ -54,7 +53,8 @@ printIframeInfo = (keyPackets) ->
         t = parseFloat t
         if k < times.length - 1
             nextTime = times[k+1]
-            if t > targetTime and targetTime < nextTime
+            # log 't, targetTime, nextTime', t, targetTime, nextTime
+            if t <= targetTime and targetTime < nextTime
                 log "#EXTINF:#{t - prevTime},"
                 log "#EXT-X-BYTERANGE:#{pos[k]}@#{prevPos}"
                 log file
