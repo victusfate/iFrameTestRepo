@@ -16,7 +16,7 @@ probeFrames = (file, cb) ->
             cb null, frames
 
 createIframeFile = (file, cb) ->
-    probeFrames file, (err, frames) =>
+    probeFrames file, (err, frames) ->
         if (err) 
             log err
             cb(err)
@@ -25,14 +25,17 @@ createIframeFile = (file, cb) ->
                 keyPackets = { 
                     times : []
                     pos : []
+                    psize : []
                     tStart      : frames[0].pkt_pts_time
                     tEnd        : frames[frames.length-1].pkt_pts_time
-                    totalSize   : frames[frames.length-1].pkt_pos 
+                    totalSize   : parseInt(frames[frames.length-1].pkt_pos, 10) + parseInt(frames[frames.length-1].pkt_size, 10)
+                    file        : file
                 }
                 
                 for frame in frames when parseInt(frame.key_frame,10) == 1 
                     keyPackets.times.push parseFloat frame.pkt_pts_time
                     keyPackets.pos.push parseInt frame.pkt_pos, 10
+                    keyPackets.psize.push parseInt frame.pkt_size, 10
                 cb(null, keyPackets)
 
 
@@ -43,17 +46,41 @@ log "#EXT-X-MEDIA-SEQUENCE:0"
 log "#EXT-X-PLAYLIST-TYPE:VOD"
 log "#EXT-X-I-FRAMES-ONLY"
 
+
+
+printIframeInfo = (keyPacketList) ->
+    times   = []
+    pos     = []
+    psize   = []
+    files   = []
+
+    prevTime = 0
+    for packet in keyPacketList
+        i = 0
+        for k,v of packet.times
+            dT = v
+            dT += prevTime if k == 0
+            times.push v
+            pos.push packet.pos[k]
+            psize.push packet.psize[k]
+            files.push packet.file
+            prevTime = v
+
+    tp = times[0]
+    for k,v of times
+        if k > 0
+            log "#EXTINF:#{v - tp},"
+            log "#EXT-X-BYTERANGE:#{psize[k]}@#{pos[k]}"
+            log files[k]
+            tp = v
+    log "#EXT-X-ENDLIST"
+
+
+
 async.map args,
     (file, cb) ->
         createIframeFile file, cb
     (err, keyPacketList) ->
-        for i in keyPacketList
-            log i
+        printIframeInfo keyPacketList
 
-
-# log "#EXTINF:#{dt},"
-# log "#EXT-X-BYTERANGE:#{packetPosition-pposmin1}@#{pposmin1}"
-# log file
-
-# log "#EXT-X-ENDLIST"
 
