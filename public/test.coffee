@@ -15,26 +15,25 @@ probeFrames = (file, cb) ->
             frames =  JSON.parse(oStdOut).frames
             cb null, frames
 
-createIframeFile = (initialOffsetTime, file, cb) ->
+createIframeFile = (file, cb) ->
     probeFrames file, (err, frames) =>
         if (err) 
             log err
             cb(err)
         else 
             if (frames.length)
-                tprev = parseFloat frames[0].pkt_pts_time + initialOffsetTime
-                pposmin1 = 0
+                keyPackets = { 
+                    times : []
+                    pos : []
+                    tStart      : frames[0].pkt_pts_time
+                    tEnd        : frames[frames.length-1].pkt_pts_time
+                    totalSize   : frames[frames.length-1].pkt_pos 
+                }
+                
                 for frame in frames when parseInt(frame.key_frame,10) == 1 
-                    t = parseFloat frame.pkt_pts_time
-                    dt = t - tprev
-                    packetPosition = parseInt frame.pkt_pos, 10
-                    log "#EXTINF:#{dt},"
-                    log "#EXT-X-BYTERANGE:#{packetPosition-pposmin1}@#{pposmin1}"
-                    log file
-                    pposmin1 = packetPosition
-                    tprev = t
-                nextOffsetTime = parseFloat frames[frames.length-1].pkt_pts_time - tprev                    
-                cb(null, nextOffsetTime)
+                    keyPackets.times.push parseFloat frame.pkt_pts_time
+                    keyPackets.pos.push parseInt frame.pkt_pos, 10
+                cb(null, keyPackets)
 
 
 log "#EXTM3U"
@@ -44,29 +43,17 @@ log "#EXT-X-MEDIA-SEQUENCE:0"
 log "#EXT-X-PLAYLIST-TYPE:VOD"
 log "#EXT-X-I-FRAMES-ONLY"
 
-file0 = args[0]
-waterfallArgs = []
-func1 = "(cb) -> createIframeFile 0, '"+args[0]+"', cb"
-waterfallArgs.push func1
-
-oArgs = JSON.parse JSON.stringify args
-log 'oArgs',oArgs
-oArgs.splice(0,1)
-log 'oArgs after splice',oArgs
-
-
-async.each oArgs,
+async.map args,
     (file, cb) ->
-        func = "(initialOffsetTime,cb) -> createIframeFile initialOffsetTime, '" + file + "', cb"
-        waterfallArgs.push func
+        createIframeFile file, cb
+    (err, keyPacketList) ->
+        for i in keyPacketList
+            log i
 
 
-for i in waterfallArgs
-    log i.toString()
+# log "#EXTINF:#{dt},"
+# log "#EXT-X-BYTERANGE:#{packetPosition-pposmin1}@#{pposmin1}"
+# log file
 
-
-# async.waterfall waterfallArgs, 
-#     () ->
-#         log "#EXT-X-ENDLIST"
-
+# log "#EXT-X-ENDLIST"
 
