@@ -68,11 +68,10 @@ printIframeInfo = (keyPacketList) ->
 
     tp = times[0]
     for k,v of times
-        if k > 0
-            log "#EXTINF:#{v - tp},"
-            log "#EXT-X-BYTERANGE:#{psize[k]}@#{pos[k]}"
-            log files[k]
-            tp = v
+        log "#EXTINF:#{v - tp},"
+        log "#EXT-X-BYTERANGE:#{psize[k]}@#{pos[k]}"
+        log files[k]
+        tp = v
     log "#EXT-X-ENDLIST"
 
 
