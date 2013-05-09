@@ -27,7 +27,7 @@ createm3u8File = (file, cb) ->
                     pos : []
                 }
                 
-                for frame in frames when parseInt(frame.key_frame,10) == 1 
+                for frame in frames when frame.media_type is 'video' and parseInt(frame.key_frame,10) == 1 
                     keyPackets.times.push parseFloat frame.pkt_pts_time
                     keyPackets.pos.push parseInt frame.pkt_pos, 10
                 cb(null, keyPackets)
