@@ -3,7 +3,6 @@ async   = require('async')
 log     = console.log
 
 args = process.argv.splice(2);
-file = args[0]
 duration = 11
 version = 4
 
