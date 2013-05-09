@@ -4,7 +4,7 @@ log     = console.log
 
 args = process.argv.splice(2);
 file = args[0]
-duration = 10
+duration = 11
 version = 4
 
 probeFrames = (file, cb) ->
@@ -66,12 +66,13 @@ printIframeInfo = (keyPacketList) ->
             files.push packet.file
             prevTime = v
 
-    tp = times[0]
     for k,v of times
-        log "#EXTINF:#{v - tp},"
-        log "#EXT-X-BYTERANGE:#{psize[k]}@#{pos[k]}"
-        log files[k]
-        tp = v
+        k = parseInt k,10
+        if k < times.length - 1
+            nextTime = times[k+1]
+            log "#EXTINF:#{nextTime - v},"
+            log "#EXT-X-BYTERANGE:#{psize[k]}@#{pos[k]}"
+            log files[k]
     log "#EXT-X-ENDLIST"
 
 
