@@ -54,6 +54,8 @@ printIframeInfo = (keyPacketList) ->
     files   = []
 
     prevTime = 0
+    tEnd = 0
+
     for packet in keyPacketList
         i = 0
         for k,v of packet.times
@@ -64,14 +66,21 @@ printIframeInfo = (keyPacketList) ->
             psize.push packet.psize[k]
             files.push packet.file
             prevTime = v
+        tEnd = packet.tEnd
 
     for k,v of times
         k = parseInt k,10
         if k < times.length - 1
             nextTime = times[k+1]
-            log "#EXTINF:#{nextTime - v},"
+            log "#EXTINF:#{(nextTime - v).toFixed(4)},"
             log "#EXT-X-BYTERANGE:#{psize[k]}@#{pos[k]}"
             log files[k]
+        else 
+            nextTime = tEnd
+            log "#EXTINF:#{(nextTime - v).toFixed(4)},"
+            log "#EXT-X-BYTERANGE:#{psize[k]}@#{pos[k]}"
+            log files[k]
+
     log "#EXT-X-ENDLIST"
 
 
