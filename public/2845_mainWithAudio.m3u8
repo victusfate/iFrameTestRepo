@@ -1,0 +1,4 @@
+#EXTM3U
+
+#EXT-X-STREAM-INF:PROGRAM-ID=1,CODECS="avc1.42001f", BANDWIDTH=2503391
+full_maintswithaudio.m3u8

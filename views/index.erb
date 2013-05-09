@@ -5,14 +5,29 @@
   </head>
   <body style="background-color:#FFFFFF; ">
     <center>
-      <h4>hi speed scrub</h4>
+      <h4>no audio, just stream</h4>
+      <video id="my_video_0" preload="auto" controls="" width="90%"> 
+        <source src="2845_noaudio_noiframe.m3u8" type="application/x-mpegURL">  
+      </video>
+
+      <h4>ext iframe but no audio</h4>
+      <video id="my_video_0" preload="auto" controls="" width="90%"> 
+        <source src="2845_noaudio.m3u8" type="application/x-mpegURL">  
+      </video>
+
+      <h4>ext iframe with audio</h4>
       <video id="my_video_1" preload="auto" controls="" width="90%"> 
         <source src="2845.m3u8" type="application/x-mpegURL">  
       </video>
 
-      <h4>one stream file to rule them all</h4>
+      <h4>one stream file to rule them all (with audio separate)</h4>
       <video id="my_video_2" preload="auto" controls="" width="90%"> 
         <source src="2845_OneStream.m3u8" type="application/x-mpegURL">  
+      </video>
+
+      <h4>one stream file to rule them all audio built in</h4>
+      <video id="my_video_2" preload="auto" controls="" width="90%"> 
+        <source src="2845_mainWithAudio.m3u8" type="application/x-mpegURL">  
       </video>
 
       <h4>ideal hi speed scrubbing, single mp4</h4>
