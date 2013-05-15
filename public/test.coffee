@@ -31,10 +31,16 @@ createIframeFile = (file, cb) ->
                     file        : file
                 }
                 
-                for frame in frames when frame.media_type is 'video' and parseInt(frame.key_frame,10) == 1 
+                for k,frame of frames when frame.media_type is 'video' and parseInt(frame.key_frame,10) == 1 
                     keyPackets.times.push parseFloat frame.pkt_pts_time
-                    keyPackets.pos.push parseInt frame.pkt_pos, 10
-                    keyPackets.psize.push parseInt frame.pkt_size, 10
+                    cpos = parseInt frame.pkt_pos, 10
+                    keyPackets.pos.push cpos
+                    i = parseInt k, 10
+                    if i < (frames.length-1) 
+                        nextPos = parseInt frames[i+1].pkt_pos, 10
+                        keyPackets.psize.push nextPos + 188 - cpos
+                    else
+                        keyPackets.psize.push parseInt frame.pkt_size, 10
                 cb(null, keyPackets)
 
 
