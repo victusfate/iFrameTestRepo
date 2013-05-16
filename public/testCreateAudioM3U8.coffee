@@ -25,11 +25,15 @@ createm3u8File = (file, cb) ->
                 keyPackets = { 
                     times : []
                     pos : []
+                    psize : []
+                    durations : []
                 }
                 
-                for frame in frames when frame.media_type is 'video' and parseInt(frame.key_frame,10) == 1 
+                for frame in frames when frame.media_type is 'audio' and parseInt(frame.key_frame,10) == 1 
                     keyPackets.times.push parseFloat frame.pkt_pts_time
                     keyPackets.pos.push parseInt frame.pkt_pos, 10
+                    keyPackets.psize.push parseInt frame.pkt_size, 10
+                    keyPackets.durations.push parseFloat frame.pkt_duration_time
                 cb(null, keyPackets)
 
 dispDuration = duration + 1
@@ -42,11 +46,13 @@ log "#EXT-X-PLAYLIST-TYPE:VOD"
 
 
 printIframeInfo = (keyPackets) ->
-    prevTime = 0
+    prevTime = keyPackets.times[0]
     prevPos = 0
     targetTime = duration
     times = keyPackets.times
     pos = keyPackets.pos
+    psize = keyPackets.psize
+    durations = keyPackets.durations
 
     for k,t of times
         k = parseInt k,10
@@ -54,13 +60,20 @@ printIframeInfo = (keyPackets) ->
         if k < times.length - 1
             nextTime = times[k+1]
             # log 't, targetTime, nextTime', t, targetTime, nextTime
+            # if targetTime < nextTime
             if t <= targetTime and targetTime < nextTime
-                log "#EXTINF:#{(t - prevTime).toFixed(4)},"
-                log "#EXT-X-BYTERANGE:#{pos[k]}@#{prevPos}"
+            # if t >= targetTime
+                log "#EXTINF:#{(nextTime - prevTime).toFixed(3)},"
+                log "#EXT-X-BYTERANGE:#{pos[k] + psize[k] - prevPos}@#{prevPos}"
                 log file
-                prevTime = t
-                targetTime += duration
-                prevPos = pos[k]
+                prevTime = nextTime + durations[k]
+                # targetTime += duration
+                targetTime = nextTime + duration
+                prevPos = pos[k] + psize[k]
+        else        
+            log "#EXTINF:#{(times[times.length-1] - prevTime).toFixed(3)},"
+            log "#EXT-X-BYTERANGE:#{pos[k] + psize[k] - prevPos}@#{prevPos}"
+            log file
 
     log "#EXT-X-ENDLIST"
 
