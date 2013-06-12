@@ -8,7 +8,7 @@ duration = parseInt args[1],10
 version = 4
 
 probeFrames = (file, cb) ->
-    exec 'ffprobe -show_frames -print_format json '+file, { maxBuffer: 10000*1024 }, (oError, oStdOut, oStdError) ->
+    exec 'ffprobe -show_frames -print_format json '+file, { maxBuffer: 1000000*1024 }, (oError, oStdOut, oStdError) ->
         if (oError) 
             cb oError
         else 

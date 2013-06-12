@@ -3,11 +3,12 @@ async   = require('async')
 log     = console.log
 
 args = process.argv.splice(2);
-duration = 11
+displayDuration = 10
+duration = 5
 version = 4
 
 probeFrames = (file, cb) ->
-    exec 'ffprobe -show_frames -print_format json '+file, { maxBuffer: 10000*1024 }, (oError, oStdOut, oStdError) ->
+    exec 'ffprobe -show_frames -print_format json '+file, { maxBuffer: 1000000*1024 }, (oError, oStdOut, oStdError) ->
         if (oError) 
             cb oError
         else 
@@ -35,17 +36,19 @@ createIframeFile = (file, cb) ->
                     keyPackets.times.push parseFloat frame.pkt_pts_time
                     cpos = parseInt frame.pkt_pos, 10
                     keyPackets.pos.push cpos
+                    psizeBytes = parseInt frame.pkt_size, 10
                     i = parseInt k, 10
                     if i < (frames.length-1) 
                         nextPos = parseInt frames[i+1].pkt_pos, 10
-                        keyPackets.psize.push nextPos + 188 - cpos
+                        # keyPackets.psize.push nextPos + 188 - cpos
+                        keyPackets.psize.push Math.ceil(psizeBytes/188)*188
                     else
-                        keyPackets.psize.push parseInt frame.pkt_size, 10
+                        keyPackets.psize.push 
                 cb(null, keyPackets)
 
 
 log "#EXTM3U"
-log "#EXT-X-TARGETDURATION:"+duration
+log "#EXT-X-TARGETDURATION:"+displayDuration
 log "#EXT-X-VERSION:"+version
 log "#EXT-X-MEDIA-SEQUENCE:0"
 log "#EXT-X-PLAYLIST-TYPE:VOD"
@@ -81,7 +84,7 @@ printIframeInfo = (keyPacketList) ->
             log "#EXTINF:#{(nextTime - v).toFixed(4)},"
             log "#EXT-X-BYTERANGE:#{psize[k]}@#{pos[k]}"
             log files[k]
-        else 
+        else
             nextTime = tEnd
             log "#EXTINF:#{(nextTime - v).toFixed(4)},"
             log "#EXT-X-BYTERANGE:#{psize[k]}@#{pos[k]}"

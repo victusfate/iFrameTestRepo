@@ -8,7 +8,7 @@ duration = parseInt args[1],10
 version = 4
 
 probeFrames = (file, cb) ->
-    exec 'ffprobe -show_frames -print_format json '+file, { maxBuffer: 10000*1024 }, (oError, oStdOut, oStdError) ->
+    exec 'ffprobe -show_frames -print_format json '+file, { maxBuffer: 1000000*1024 }, (oError, oStdOut, oStdError) ->
         if (oError) 
             cb oError
         else 
@@ -63,17 +63,21 @@ printIframeInfo = (keyPackets) ->
             # if targetTime < nextTime
             if t <= targetTime and targetTime < nextTime
             # if t >= targetTime
-                log "#EXTINF:#{(nextTime - prevTime).toFixed(3)},"
-                log "#EXT-X-BYTERANGE:#{pos[k] + psize[k] - prevPos}@#{prevPos}"
-                log file
+                if targetTime + duration < times[times.length-1]
+                    log "#EXTINF:#{(nextTime - prevTime).toFixed(4)},"
+                    log "#EXT-X-BYTERANGE:#{pos[k] + psize[k] - prevPos}@#{prevPos}"
+                    log file
+                else
+                    timeToEnd = times[times.length-1] - nextTime + durations[k];
+                    if timeToEnd > 0
+                        bytesToStreamEnd = pos[pos.length-1] + psize[psize.length-1] - (pos[k] + psize[k])
+                        log "#EXTINF:#{(timeToEnd).toFixed(4)},"
+                        log "#EXT-X-BYTERANGE:#{pos[k] + psize[k] + bytesToStreamEnd - prevPos}@#{prevPos}"
+                        log file
                 prevTime = nextTime + durations[k]
                 # targetTime += duration
                 targetTime = nextTime + duration
                 prevPos = pos[k] + psize[k]
-        else        
-            log "#EXTINF:#{(times[times.length-1] - prevTime).toFixed(3)},"
-            log "#EXT-X-BYTERANGE:#{pos[k] + psize[k] - prevPos}@#{prevPos}"
-            log file
 
     log "#EXT-X-ENDLIST"
 
